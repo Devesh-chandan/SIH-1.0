@@ -1,6 +1,30 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, TreePine } from 'lucide-react';
+import { Eye, EyeOff, TreePine, User, Briefcase, Handshake } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+
+// Define the RoleButton component to keep the main component clean
+interface RoleButtonProps {
+  role: 'admin' | 'employee' | 'beneficiary';
+  label: string;
+  icon: React.ElementType;
+  isSelected: boolean;
+  onClick: (role: 'admin' | 'employee' | 'beneficiary') => void;
+}
+
+const RoleButton: React.FC<RoleButtonProps> = ({ role, label, icon: Icon, isSelected, onClick }) => {
+  const selectedClasses = isSelected ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-gray-700 hover:bg-gray-100';
+
+  return (
+    <button
+      type="button"
+      className={`flex flex-col items-center justify-center p-4 rounded-xl transition-all duration-200 ease-in-out border border-gray-200 ${selectedClasses}`}
+      onClick={() => onClick(role)}
+    >
+      <Icon className="h-6 w-6 mb-2" />
+      <span className="text-sm font-medium">{label}</span>
+    </button>
+  );
+};
 
 const LoginForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -14,17 +38,21 @@ const LoginForm: React.FC = () => {
 
   const { login } = useAuth();
 
+  const handleRoleChange = (role: 'admin' | 'employee' | 'beneficiary') => {
+    setFormData({ ...formData, role });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
     const success = await login(formData.email, formData.password, formData.role);
-    
+
     if (!success) {
       setError('Invalid credentials. Use password: demo123');
     }
-    
+
     setLoading(false);
   };
 
@@ -32,9 +60,9 @@ const LoginForm: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <div className="mx-auto h-16 w-16 bg-green-600 rounded-full flex items-center justify-center mb-4">
+          {/* <div className="mx-auto h-16 w-16 bg-blue-600 rounded-full flex items-center justify-center mb-4">
             <TreePine className="h-8 w-8 text-white" />
-          </div>
+          </div> */}
           <h2 className="text-3xl font-bold text-gray-900">FRA Atlas & WebGIS</h2>
           <p className="mt-2 text-sm text-gray-600">
             Forest Rights Act Decision Support System
@@ -47,16 +75,29 @@ const LoginForm: React.FC = () => {
             <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
               Login As
             </label>
-            <select
-              id="role"
-              value={formData.role}
-              onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="admin">Admin</option>
-              <option value="employee">Employee</option>
-              <option value="beneficiary">Beneficiary</option>
-            </select>
+            <div className="grid grid-cols-3 gap-4">
+              <RoleButton
+                role="admin"
+                label="Admin"
+                icon={Briefcase}
+                isSelected={formData.role === 'admin'}
+                onClick={handleRoleChange}
+              />
+              <RoleButton
+                role="employee"
+                label="Employee"
+                icon={User}
+                isSelected={formData.role === 'employee'}
+                onClick={handleRoleChange}
+              />
+              <RoleButton
+                role="beneficiary"
+                label="Beneficiary"
+                icon={Handshake}
+                isSelected={formData.role === 'beneficiary'}
+                onClick={handleRoleChange}
+              />
+            </div>
           </div>
 
           <div>
@@ -114,7 +155,7 @@ const LoginForm: React.FC = () => {
 
           <div className="text-xs text-gray-500 text-center space-y-1">
             <p>Demo Credentials: Use password "demo123" for any email</p>
-            <p>Switch between Admin, Employee, and Beneficiary roles</p>
+            <p>Click on the buttons above to select a role</p>
           </div>
         </form>
       </div>

@@ -21,7 +21,7 @@ const Sidebar: React.FC = () => {
     { to: '/dashboard', icon: Home, label: 'Dashboard' },
     { to: '/atlas', icon: Map, label: 'FRA Atlas' },
     { to: '/records', icon: FileText, label: 'FRA Records' },
-    { to: '/asset-mapping', icon: Satellite, label: 'Asset Mapping' },
+    { to: '/asset-mapping', icon: Satellite, label: 'Asset Mappin' },
     { to: '/dss', icon: Brain, label: 'Decision Support' },
     { to: '/analytics', icon: BarChart3, label: 'Analytics' },
     { to: '/users', icon: Users, label: 'User Management' },
