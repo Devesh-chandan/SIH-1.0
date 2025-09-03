@@ -1,5 +1,5 @@
 import React from 'react';
-import { Users, FileText, CheckCircle, Clock, MapPin, Satellite, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Users, FileText, CheckCircle, Clock, MapPin, TrendingUp, AlertTriangle, Activity, Shield, Database, PlusCircle } from 'lucide-react';
 import StatCard from '../components/Dashboard/StatCard';
 import AnalyticsChart from '../components/Charts/AnalyticsChart';
 import { useAuth } from '../context/AuthContext';
@@ -7,11 +7,12 @@ import { useAuth } from '../context/AuthContext';
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
 
+  // Admin stats aligned with UX4G principles (Task-Oriented)
   const adminStats = [
-    { title: 'Total FRA Records', value: '12,547', change: { value: '+8.2% from last month', type: 'increase' as const }, icon: FileText, color: 'blue' as const },
-    { title: 'Approved Claims', value: '8,932', change: { value: '+5.1% from last month', type: 'increase' as const }, icon: CheckCircle, color: 'green' as const },
-    { title: 'Pending Review', value: '2,847', change: { value: '-12.3% from last month', type: 'decrease' as const }, icon: Clock, color: 'yellow' as const },
-    { title: 'Active Users', value: '1,456', change: { value: '+15.7% from last month', type: 'increase' as const }, icon: Users, color: 'purple' as const },
+    { title: 'Total FRA Records', value: '12,547', change: { value: '+8.2%', type: 'increase' as const }, icon: FileText, color: 'blue' as const },
+    { title: 'Claims Pending Review', value: '2,847', change: { value: '-12.3%', type: 'decrease' as const }, icon: Clock, color: 'yellow' as const },
+    { title: 'Claims Approved (Month)', value: '432', change: { value: '+5.1%', type: 'increase' as const }, icon: CheckCircle, color: 'green' as const },
+    { title: 'High-Priority Alerts', value: '14', change: { value: '2 new today', type: 'neutral' as const }, icon: AlertTriangle, color: 'red' as const },
   ];
 
   const beneficiaryStats = [
@@ -20,18 +21,8 @@ const Dashboard: React.FC = () => {
     { title: 'Eligible Schemes', value: '7', icon: TrendingUp, color: 'purple' as const },
     { title: 'Land Area', value: '4.2 ha', icon: MapPin, color: 'green' as const },
   ];
-
-  const fraStatusData = {
-    labels: ['Approved', 'Pending', 'Under Review', 'Rejected'],
-    datasets: [
-      {
-        data: [8932, 2847, 1245, 523],
-        backgroundColor: ['#10b981', '#f59e0b', '#3b82f6', '#ef4444'],
-        borderWidth: 0,
-      },
-    ],
-  };
-
+  
+  // Data for charts - simplified for clarity as per UX4G
   const monthlyTrendsData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
     datasets: [
@@ -41,6 +32,7 @@ const Dashboard: React.FC = () => {
         borderColor: '#3b82f6',
         backgroundColor: 'rgba(59, 130, 246, 0.1)',
         tension: 0.4,
+        fill: true,
       },
       {
         label: 'Applications Approved',
@@ -48,38 +40,42 @@ const Dashboard: React.FC = () => {
         borderColor: '#10b981',
         backgroundColor: 'rgba(16, 185, 129, 0.1)',
         tension: 0.4,
+        fill: true,
+      },
+    ],
+  };
+  
+  const claimStatusData = {
+    labels: ['Approved', 'Pending', 'Under Review', 'Rejected'],
+    datasets: [
+      {
+        label: 'Claim Status',
+        data: [8932, 2847, 1245, 523],
+        backgroundColor: ['#10b981', '#f59e0b', '#3b82f6', '#ef4444'],
+        borderWidth: 0,
       },
     ],
   };
 
-  const stateWiseData = {
-    labels: ['Chhattisgarh', 'Jharkhand', 'Odisha', 'Madhya Pradesh', 'Maharashtra'],
-    datasets: [
-      {
-        label: 'FRA Claims',
-        data: [3200, 2800, 2100, 1900, 1500],
-        backgroundColor: '#3b82f6',
-      },
-    ],
-  };
 
   const stats = user?.role === 'beneficiary' ? beneficiaryStats : adminStats;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">
-          {user?.role === 'beneficiary' ? 'My Dashboard' : 'Administrative Dashboard'}
-        </h1>
-        <div className="text-sm text-gray-500">
-          Last updated: {new Date().toLocaleDateString('en-IN', { 
-            day: 'numeric', 
-            month: 'long', 
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-          })}
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">
+            {user?.role === 'beneficiary' ? 'My Dashboard' : 'Administrative Dashboard'}
+          </h1>
+          <p className="text-gray-500 mt-1">Welcome back, {user?.name}. Here's an overview of the system's status.</p>
         </div>
+        {user?.role !== 'beneficiary' && (
+             <button className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center space-x-2 hover:bg-blue-700 transition-colors">
+                  <PlusCircle size={20} />
+                  <span>Add New Record</span>
+            </button>
+        )}
       </div>
 
       {/* Stats Grid */}
@@ -89,75 +85,41 @@ const Dashboard: React.FC = () => {
         ))}
       </div>
 
-      {user?.role !== 'beneficiary' && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <AnalyticsChart
-            type="pie"
-            title="FRA Application Status Distribution"
-            data={fraStatusData}
-          />
-          <AnalyticsChart
-            type="bar"
-            title="State-wise FRA Claims"
-            data={stateWiseData}
-          />
+      {/* Main Dashboard Area */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left column for charts */}
+        <div className="lg:col-span-2 space-y-8">
+            <AnalyticsChart
+              type="line"
+              title="Monthly Application Trends"
+              data={monthlyTrendsData}
+            />
+            <AnalyticsChart
+              type="bar"
+              title="Claim Status Distribution"
+              data={claimStatusData}
+            />
         </div>
-      )}
-
-      <div className="grid grid-cols-1 gap-6">
-        <AnalyticsChart
-          type="line"
-          title="Monthly Application Trends"
-          data={monthlyTrendsData}
-          height={400}
-        />
-      </div>
-
-      {/* Recent Activity */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <div className="p-6 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">Recent Activity</h3>
-        </div>
-        <div className="p-6">
-          <div className="space-y-4">
-            {user?.role === 'beneficiary' ? (
-              <>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">Your IFR application has been approved</span>
-                  <span className="text-xs text-gray-400">2 days ago</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">New scheme eligibility: PM-KISAN</span>
-                  <span className="text-xs text-gray-400">1 week ago</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">Land survey scheduled for next month</span>
-                  <span className="text-xs text-gray-400">2 weeks ago</span>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">245 new FRA applications submitted today</span>
-                  <span className="text-xs text-gray-400">2 hours ago</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">Satellite imagery updated for Bastar district</span>
-                  <span className="text-xs text-gray-400">4 hours ago</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                  <span className="text-sm text-gray-600">AI processing completed for 1,200 documents</span>
-                  <span className="text-xs text-gray-400">6 hours ago</span>
-                </div>
-              </>
-            )}
-          </div>
+        {/* Right column for actionable items */}
+        <div className="lg:col-span-1 space-y-6">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center"><Activity className="mr-2"/>Recent System Activity</h3>
+                 <ul className="divide-y divide-gray-200 text-sm">
+                    <li className="py-2">Admin 'Dr. Priya' updated AI model thresholds. <span className="text-gray-400 text-xs float-right">2 min ago</span></li>
+                    <li className="py-2">Employee 'Anil Singh' approved FRA Record #4521. <span className="text-gray-400 text-xs float-right">1 hour ago</span></li>
+                    <li className="py-2">System initiated automatic database backup. <span className="text-gray-400 text-xs float-right">3 hours ago</span></li>
+                 </ul>
+            </div>
+             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center"><Shield className="mr-2"/>Security Alerts</h3>
+                 <ul className="divide-y divide-gray-200 text-sm">
+                    <li className="py-2 text-yellow-700">High number of failed login attempts from IP 192.168.1.1.</li>
+                 </ul>
+            </div>
+             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center"><Database className="mr-2"/>Database Status</h3>
+                <p className="text-sm text-gray-600">All systems operational. Last backup completed successfully.</p>
+            </div>
         </div>
       </div>
     </div>
@@ -165,3 +127,4 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
+
