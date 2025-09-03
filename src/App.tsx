@@ -32,7 +32,7 @@ const AppContent: React.FC = () => {
             <Route path="/asset-mapping" element={<div className="text-center py-12 text-gray-500">Asset Mapping Module (Coming Soon)</div>} />
             <Route path="/analytics" element={<div className="text-center py-12 text-gray-500">Advanced Analytics (Coming Soon)</div>} />
             <Route path="/users" element={<div className="text-center py-12 text-gray-500">User Management (Coming Soon)</div>} />
-            <Route path="/settings" element={<div className="text-center py-12 text-gray-500">Settings (Coming Soon)</div>} />
+            <Route path="/settings" element={<div className="text-center py-12 text-gray-500">System management (Coming Soon)</div>} />
             <Route path="/my-land" element={<div className="text-center py-12 text-gray-500">My Land View (Coming Soon)</div>} />
             <Route path="/schemes" element={<div className="text-center py-12 text-gray-500">Eligible Schemes (Coming Soon)</div>} />
             <Route path="/status" element={<div className="text-center py-12 text-gray-500">Application Status (Coming Soon)</div>} />

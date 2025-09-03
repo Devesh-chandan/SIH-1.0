@@ -25,7 +25,7 @@ const Sidebar: React.FC = () => {
     { to: '/dss', icon: Brain, label: 'Decision Support' },
     { to: '/analytics', icon: BarChart3, label: 'Analytics' },
     { to: '/users', icon: Users, label: 'User Management' },
-    { to: '/settings', icon: Settings, label: 'Settings' },
+    { to: '/settings', icon: Settings, label: 'System Management' },
   ];
 
   const beneficiaryLinks = [
