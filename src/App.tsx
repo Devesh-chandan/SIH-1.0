@@ -7,6 +7,8 @@ import Sidebar from './components/Layout/Sidebar';
 import Dashboard from './pages/Dashboard';
 import Atlas from './pages/Atlas';
 import DecisionSupport from './pages/DecisionSupport';
+import Records from './pages/Records';
+
 
 const AppContent: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -26,7 +28,7 @@ const AppContent: React.FC = () => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/atlas" element={<Atlas />} />
             <Route path="/dss" element={<DecisionSupport />} />
-            <Route path="/records" element={<div className="text-center py-12 text-gray-500">FRA Records Management (Coming Soon)</div>} />
+            <Route path="/records" element={<Records />} />
             <Route path="/asset-mapping" element={<div className="text-center py-12 text-gray-500">Asset Mapping Module (Coming Soon)</div>} />
             <Route path="/analytics" element={<div className="text-center py-12 text-gray-500">Advanced Analytics (Coming Soon)</div>} />
             <Route path="/users" element={<div className="text-center py-12 text-gray-500">User Management (Coming Soon)</div>} />
